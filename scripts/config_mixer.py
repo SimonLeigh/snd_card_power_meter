@@ -32,11 +32,11 @@ def run_command(cmd):
 
 def config_mixer():
     print("Configuring mixer...")
-    run_command(["amixer", "sset", "Input Source", "Rear Mic"])
+    run_command(["amixer", "sset", "Mic", "cap", "capture"])
     run_command(["amixer", "set", "Digital", "60", "cap", "capture"])
     run_command(["amixer", "set", "Capture", "15dB,6dB", "cap", "capture"])
-    run_command(["amixer", "set", "Rear Mic Boost", "0", "cap", "capture"])
-    run_command(["amixer", "set", "Front Mic Boost", "0", "cap", "capture"])
+    run_command(["amixer", "set", "Mic Boost", "0", "cap", "capture"])
+#    run_command(["amixer", "set", "Front Mic Boost", "0", "cap", "capture"])
 
 
 if __name__=="__main__":
