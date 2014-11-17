@@ -152,7 +152,10 @@ class Recorder(object):
             self.sampler.terminate()
         
         self._blocking_check_sox_process_has_completed()
-                
+
+        self.socket.close()
+        self.context.term()
+
         logging.shutdown()
 
 
