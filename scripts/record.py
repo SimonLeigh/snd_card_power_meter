@@ -39,7 +39,7 @@ class Recorder(object):
         log.info("Recording power data. Press CTRL+C to stop.")
 
         # Bind to port
-        self.socket.bind("tcp://*:" + str(config.BROADCAST_PORT))
+        self.socket.bind("tcp://*:%s" % config.BROADCAST_PORT)
 
         prev_conv_time = None # the last time sox was run
         while True:
