@@ -26,6 +26,10 @@ PHASE_DIFF_TOLERANCE = SAMPLES_PER_MAINS_CYCLE / 4
 SAMPLES_PER_DEGREE = SAMPLES_PER_MAINS_CYCLE / 360
 
 ##########################################################################
+# PORT TO BROADCAST MEASURES ON
+BROADCAST_PORT = 5556
+
+##########################################################################
 # FILENAMES AND DIRECTORIES
 BASE_DATA_DIR = os.environ.get("DATA_DIR")
 if BASE_DATA_DIR is None:

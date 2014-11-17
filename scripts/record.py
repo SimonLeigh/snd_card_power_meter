@@ -17,6 +17,9 @@ import snd_card_power_meter.scpm as scpm
 from snd_card_power_meter.sampler import Sampler
 import snd_card_power_meter.config as config
 
+# Import of ZMQ to allow publishing of data to TCP port.
+import zmq
+
 class Recorder(object):
     
     def __init__(self):
@@ -24,12 +27,19 @@ class Recorder(object):
         self.sox_process = None # a subprocess.Popen object
         self.wavfile_name = None
         self.sampler = Sampler()
+        
+        # Initialise zmq context and socket
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.PUB)
 
     def start(self):
         calibration = scpm.load_calibration_file()
         self.sampler.open()
         self.sampler.start()
         log.info("Recording power data. Press CTRL+C to stop.")
+
+        # Bind to port
+        self.socket.bind("tcp://*:" + str(config.BROADCAST_PORT))
 
         prev_conv_time = None # the last time sox was run
         while True:
@@ -50,7 +60,12 @@ class Recorder(object):
                 data_file.write('{:.1f} {:.2f} {:.2f} {:.2f}\n'
                                 .format(adc_data.time, power.real_power,
                                         power.apparent_power, power.volts_rms))
-    
+
+            # Broadcast latest values
+            self.socket.send_string('{:.1f} {:.2f} {:.2f} {:.2f}'
+                                    .format(adc_data.time, power.real_power,
+                                            power.apparent_power, power.volts_rms))
+            
             # Check if it's time to create a new FLAC file
             t = datetime.datetime.utcfromtimestamp(adc_data.time)
             if self.wavfile is None or t.hour == (prev_conv_time.hour+1)%24:
